@@ -1,54 +1,35 @@
 # Second Opinion
 
-A clinical reasoning educator that walks through differential diagnosis step by step — showing not just *what* the diagnosis is, but *why*.
+> Most AI tools in medicine return an answer. Second Opinion returns a *reasoning process*.
 
-## What it does
+## The problem
 
-Given a patient presentation, Second Opinion streams a structured reasoning trace in real time:
+Clinical reasoning is the hardest skill to teach in medicine. A diagnosis without explanation offers nothing to a student — or to a clinician who needs to defend it. Existing AI tools give you an output. They don't show their work.
 
-- Generates 4-6 differential diagnoses with live probability estimates
-- Updates probabilities as supporting and refuting evidence is surfaced
-- Produces a conclusion with the leading diagnosis and next steps
-- Asks clarifying questions to guide further workup
-- Exports a clinical-quality PDF report (text-selectable, Puppeteer-rendered)
-- Supports English and Simplified Chinese
+## What Second Opinion does
 
-The output schema is strictly structured (NDJSON) so every reasoning step is auditable — not a black-box answer, but a transparent trace a clinician or student can follow.
+Given a patient presentation, Second Opinion streams a structured differential diagnosis in real time — not as a chat response, but as a live reasoning trace with auditable steps:
 
-## Demo
+- Surfaces 4-6 hypotheses with probability estimates that update as evidence is weighed
+- Shows which clinical features support or refute each hypothesis
+- Produces a conclusion with a leading diagnosis and recommended workup
+- Asks focused clarifying questions that would most change the differential
+- Exports a clinical-quality PDF report with selectable text
 
-Try it live: [second-opinion-production.up.railway.app](https://second-opinion-production.up.railway.app)
+Every step is transparent. The model can't just output an answer — it must justify it in a defined schema, one event at a time.
 
-## Tech stack
+## Live demo
 
-- **Backend**: Node.js, Express, Server-Sent Events for streaming
-- **AI**: [OpenRouter](https://openrouter.ai) — default model is MiniMax M2, with Gemini 2.0 Flash and Claude 3.5 Haiku available
-- **PDF**: Puppeteer (headless Chrome) renders the report server-side
-- **Frontend**: Vanilla JS, no framework, no build step
+[second-opinion-production.up.railway.app](https://second-opinion-production.up.railway.app)
 
-## Running locally
+## Technical approach
 
-```bash
-# 1. Clone
-git clone https://github.com/daniyeel/Second-Opinion.git
-cd Second-Opinion
+Responses are streamed as NDJSON over Server-Sent Events. Each line is a typed event (`hypothesis`, `evidence`, `update`, `conclusion`, `question`) that the frontend renders incrementally. The output schema is enforced via prompt engineering — the model is constrained to produce structured reasoning, not free text.
 
-# 2. Install dependencies (first run downloads Chromium for Puppeteer)
-npm install
+PDF export is handled server-side by Puppeteer, producing a document a clinician could hand to a student.
 
-# 3. Add your OpenRouter API key
-echo "OPENROUTER_API_KEY=your_key_here" > .env
+Default model is **MiniMax M2** via OpenRouter, with Gemini 2.0 Flash and Claude 3.5 Haiku available. Full Simplified Chinese support is built in.
 
-# 4. Start
-npm start
-```
+## Stack
 
-Open [http://localhost:3000](http://localhost:3000).
-
-Get an API key at [openrouter.ai](https://openrouter.ai).
-
-## Why this exists
-
-Most AI tools in medicine return an answer. Second Opinion returns a *reasoning process* — one that can be audited, questioned, and refined. The goal is education: showing how a clinician thinks, not replacing the clinician.
-
-> Educational demonstration only. Not medical advice. All scenarios are synthetic.
+Node.js · Express · SSE · Puppeteer · OpenRouter · Vanilla JS
