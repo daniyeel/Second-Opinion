@@ -701,6 +701,121 @@
         background: var(--accent-glow);
       }
 
+      /* ============ COMPARE ============ */
+      .compare-toggle {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-size: 12px; font-weight: 500; color: var(--text-2);
+        background: transparent; border: 1px solid var(--border);
+        border-radius: 6px; padding: 4px 10px; cursor: pointer;
+        font-family: inherit; transition: all 0.15s; height: 28px;
+      }
+      .compare-toggle:hover { color: var(--text); border-color: var(--border-strong); }
+      .compare-toggle.active { color: var(--accent); border-color: var(--accent); background: var(--accent-glow); }
+
+      .cmp-layout { display: none; grid-template-columns: 1fr 1fr; gap: 24px; width: 100%; margin-top: 24px; }
+      .cmp-layout.visible { display: grid; }
+
+      .compare-active .main { max-width: 1440px; transition: max-width 0.3s ease; }
+
+      .cmp-pane {
+        min-width: 0; border: 1px solid var(--border);
+        border-radius: var(--radius); background: var(--bg-elev);
+        display: flex; flex-direction: column;
+      }
+      .cmp-pane-header {
+        display: flex; align-items: center; gap: 8px; padding: 12px 16px;
+        border-bottom: 1px solid var(--border); background: var(--bg-elev-2);
+        border-radius: var(--radius) var(--radius) 0 0; flex-shrink: 0;
+      }
+      .cmp-model-name { font-size: 12.5px; font-weight: 600; color: var(--text); flex: 1; }
+      .cmp-status-dot {
+        width: 6px; height: 6px; border-radius: 50%; background: var(--accent);
+        box-shadow: 0 0 0 2px var(--accent-glow); flex-shrink: 0;
+      }
+      .cmp-pane.done .cmp-status-dot { background: var(--supports); box-shadow: none; }
+      .cmp-pane.error .cmp-status-dot { background: var(--refutes); box-shadow: none; }
+      .cmp-status-text { font-size: 11px; color: var(--text-3); }
+
+      .cmp-body { padding: 0 16px 16px; flex: 1; }
+      .cmp-thoughts { padding: 10px 0 6px; display: flex; flex-direction: column; gap: 5px; min-height: 16px; }
+      .cmp-thought {
+        font-size: 12px; line-height: 1.55; color: var(--text-2);
+        padding-left: 12px; position: relative; transition: opacity 0.3s;
+      }
+      .cmp-thought::before { content: "–"; position: absolute; left: 0; color: var(--text-3); }
+
+      .cmp-cards { display: flex; flex-direction: column; }
+      .cmp-card { padding: 10px 0; border-top: 1px solid var(--border); }
+      .cmp-cards > .cmp-card:first-child { border-top: none; }
+      .cmp-card-header { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 3px; }
+      .cmp-card-name { font-size: 13px; font-weight: 600; color: var(--text); }
+      .cmp-card.leading .cmp-card-name { color: var(--accent-dim); }
+      .cmp-card-prob { font-size: 12.5px; font-weight: 600; color: var(--accent); flex-shrink: 0; }
+      .cmp-card-bar { height: 3px; background: var(--bg-elev-2); border-radius: 2px; margin: 5px 0; }
+      .cmp-card-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width 0.4s ease; }
+      .cmp-card.leading .cmp-card-bar-fill { background: var(--accent-dim); }
+      .cmp-card-reasoning { font-size: 11.5px; color: var(--text-2); line-height: 1.5; }
+
+      .cmp-conclusion {
+        margin-top: 12px; padding: 12px 14px; background: var(--conclusion-bg);
+        border-left: 3px solid var(--conclusion); border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      }
+      .cmp-conclusion-label {
+        font-size: 9px; font-weight: 700; text-transform: uppercase;
+        letter-spacing: 0.1em; color: var(--conclusion); margin-bottom: 4px;
+      }
+      .cmp-conclusion-leading { font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
+      .cmp-conclusion-text { font-size: 12px; line-height: 1.6; color: var(--text-1); }
+      .cmp-post-actions { padding-top: 12px; display: flex; gap: 8px; }
+
+      /* ============ HISTORY ============ */
+      .history-btn {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 12px; font-weight: 500; color: var(--text-2);
+        background: transparent; border: 1px solid var(--border);
+        border-radius: 6px; padding: 5px 11px; cursor: pointer;
+        font-family: inherit; transition: all 0.15s; height: 34px;
+      }
+      .history-btn:hover { color: var(--text); border-color: var(--border-strong); background: var(--bg-elev); }
+
+      .history-panel {
+        position: fixed; top: 68px; right: 16px;
+        width: 360px; max-height: 500px;
+        background: var(--bg-elev); border: 1px solid var(--border);
+        border-radius: var(--radius);
+        box-shadow: 0 8px 32px rgba(0,0,0,0.1), 0 2px 8px rgba(0,0,0,0.06);
+        display: flex; flex-direction: column; z-index: 45;
+        animation: panel-in 0.15s ease;
+      }
+      .history-panel.hidden { display: none; }
+      @keyframes panel-in {
+        from { opacity: 0; transform: translateY(-6px); }
+        to   { opacity: 1; transform: translateY(0); }
+      }
+      .history-panel-header {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 13px 16px; border-bottom: 1px solid var(--border);
+        font-size: 13px; font-weight: 600; color: var(--text); flex-shrink: 0;
+      }
+      .history-close-btn {
+        background: none; border: none; cursor: pointer; color: var(--text-3);
+        font-size: 14px; padding: 2px 6px; border-radius: 4px; line-height: 1; font-family: inherit;
+      }
+      .history-close-btn:hover { background: var(--bg-elev-2); color: var(--text); }
+      .history-list { overflow-y: auto; flex: 1; }
+      .history-empty { padding: 28px 16px; text-align: center; color: var(--text-3); font-size: 13px; line-height: 1.5; }
+      .history-item { padding: 12px 16px; border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.1s; }
+      .history-item:hover { background: var(--bg-elev-2); }
+      .history-item:last-child { border-bottom: none; }
+      .history-item-top { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin-bottom: 2px; }
+      .history-item-leading { font-size: 13px; font-weight: 600; color: var(--text); }
+      .history-item-prob { font-size: 12px; font-weight: 600; color: var(--accent); flex-shrink: 0; }
+      .history-item-meta { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+      .history-item-snippet {
+        font-size: 12px; color: var(--text-2); line-height: 1.5;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      }
+
       /* ============ PRINT VIEW ============ */
       #print-view { display: none; }
 
@@ -781,6 +896,7 @@
           </div>
         </div>
         <div class="topbar-actions">
+          <button class="history-btn" id="history-btn" aria-label="Session history">History</button>
           <div class="lang-toggle" id="lang-toggle" role="group" aria-label="Language">
             <button class="lang-btn active" data-lang="en">EN</button>
             <button class="lang-btn" data-lang="zh">中文</button>
@@ -851,6 +967,13 @@
                   <span class="model-selector-label" data-i18n="modelLabel">Model:</span>
                   <select class="model-select" id="model-select" aria-label="Select AI model"></select>
                 </div>
+                <div class="model-selector" id="model-selector-b" style="display:none">
+                  <span class="model-selector-label">vs:</span>
+                  <select class="model-select" id="model-select-b" aria-label="Second model for comparison"></select>
+                </div>
+                <button class="compare-toggle" id="compare-toggle" type="button">
+                  <span class="compare-toggle-label">Compare</span>
+                </button>
               </div>
               <button class="submit-btn" id="submit" data-i18n-aria="beginReasoningAria" aria-label="Begin reasoning">
                 <span data-i18n="beginReasoning">Begin reasoning</span>
@@ -884,10 +1007,23 @@
           <div class="log-content" id="log-content"></div>
         </section>
 
+        <div class="cmp-layout" id="cmp-layout">
+          <div class="cmp-pane" id="cmp-pane-a"></div>
+          <div class="cmp-pane" id="cmp-pane-b"></div>
+        </div>
+
         <div class="disclaimer" data-i18n="disclaimer">
           For demonstration and education only. Not medical advice.
         </div>
       </main>
+
+      <div class="history-panel hidden" id="history-panel" role="dialog" aria-label="Session history">
+        <div class="history-panel-header">
+          <span>Session History</span>
+          <button class="history-close-btn" id="history-close-btn" aria-label="Close">✕</button>
+        </div>
+        <div class="history-list" id="history-list"></div>
+      </div>
 
       <div class="kbd-hint" aria-hidden="true">
         <kbd>Ctrl</kbd> + <kbd>Enter</kbd> to submit · <kbd>Esc</kbd> to clear
@@ -1508,6 +1644,7 @@
             postConclusionActions.style.display = "block";
             currentRunActive = false;
             inputCard.classList.remove("dimmed");
+            saveToHistory();
             break;
           case "error":
             appendLog("error", t("logError"), evt.text);
@@ -1542,6 +1679,12 @@
           inputEl.focus();
           inputCard.style.borderColor = "var(--refutes)";
           setTimeout(() => (inputCard.style.borderColor = ""), 1000);
+          return;
+        }
+
+        if (compareMode) {
+          lastPresentation = text;
+          await runComparison(text);
           return;
         }
 
@@ -1603,17 +1746,21 @@
       }
 
       // ============ EXPORT ============
-      async function exportToPDF() {
-        if (!pdfBtn) return;
+      async function exportToPDF(opts = {}) {
+        const activeBtn = opts.btn || pdfBtn;
+        if (!activeBtn) return;
+        const activeHyps = opts.hyps || hypotheses;
+        const activeConclusion = opts.conclusion !== undefined ? opts.conclusion : lastConclusion;
+        const activeTLog = opts.tLog || thoughtsLog;
+        const activeModelLabel = opts.modelLbl || (modelSelect.options[modelSelect.selectedIndex]?.text || selectedModel);
 
-        const sorted = [...hypotheses.entries()].sort(
+        const sorted = [...activeHyps.entries()].sort(
           (a, b) => b[1].probability - a[1].probability
         );
         const now = new Date();
         const locale = currentLang === "zh" ? "zh-CN" : "en-GB";
         const dateStr = now.toLocaleDateString(locale, { day: "numeric", month: "long", year: "numeric" });
         const timeStr = now.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
-        const modelLabel = modelSelect.options[modelSelect.selectedIndex]?.text || selectedModel;
 
         const hypsHtml = sorted.map(([id, h], i) => `
             <div class="pv-hyp">
@@ -1625,11 +1772,11 @@
             </div>`).join("");
 
         const leading = sorted.length > 0 ? sorted[0][1] : null;
-        const conclusionHtml = lastConclusion ? `
+        const conclusionHtml = activeConclusion ? `
           <section class="pv-section">
             <div class="pv-conclusion-label" style="font-size:7pt;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9CA3AF;margin-bottom:3pt;">Leading Diagnosis</div>
             ${leading ? `<div class="pv-conclusion-name">${escapeHtml(leading.label)}</div>` : ""}
-            <div class="pv-conclusion-text">${escapeHtml(lastConclusion)}</div>
+            <div class="pv-conclusion-text">${escapeHtml(activeConclusion)}</div>
           </section>` : "";
 
         const pvHtml = `
@@ -1649,7 +1796,7 @@
                 </div>
                 <div class="pv-meta-item">
                   <span class="pv-meta-label">${t("pdfModel")}</span>
-                  <span class="pv-meta-value">${escapeHtml(modelLabel)}</span>
+                  <span class="pv-meta-value">${escapeHtml(activeModelLabel)}</span>
                 </div>
                 <div class="pv-meta-item">
               </div>
@@ -1668,10 +1815,10 @@
               ${hypsHtml}
             </section>
 
-            ${thoughtsLog.length > 0 ? `
+            ${activeTLog.length > 0 ? `
             <section class="pv-section pv-reasoning-section">
               <div class="pv-section-title">Reasoning Log</div>
-              ${thoughtsLog.map(tt => `<div class="pv-thought-item">${escapeHtml(tt)}</div>`).join("")}
+              ${activeTLog.map(tt => `<div class="pv-thought-item">${escapeHtml(tt)}</div>`).join("")}
             </section>` : ""}
 
             <footer class="pv-footer">
@@ -1701,9 +1848,9 @@ ${headStyles}
 </body>
 </html>`;
 
-        const prevText = pdfBtn.textContent;
-        pdfBtn.textContent = "Generating…";
-        pdfBtn.disabled = true;
+        const prevText = activeBtn.textContent;
+        activeBtn.textContent = "Generating…";
+        activeBtn.disabled = true;
 
         try {
           const resp = await fetch("/api/pdf", {
@@ -1721,9 +1868,283 @@ ${headStyles}
         } catch (err) {
           alert("PDF generation failed: " + err.message);
         } finally {
-          pdfBtn.textContent = prevText;
-          pdfBtn.disabled = false;
+          activeBtn.textContent = prevText;
+          activeBtn.disabled = false;
         }
+      }
+
+      // ============ COMPARE ============
+      let compareMode = false;
+      const modelSelectB = document.getElementById("model-select-b");
+
+      function toggleCompare() {
+        compareMode = !compareMode;
+        document.getElementById("compare-toggle").classList.toggle("active", compareMode);
+        document.querySelector(".compare-toggle-label").textContent = compareMode ? "Single" : "Compare";
+        document.getElementById("model-selector-b").style.display = compareMode ? "inline-flex" : "none";
+        if (!compareMode) {
+          document.getElementById("cmp-layout").classList.remove("visible");
+          document.body.classList.remove("compare-active");
+        }
+      }
+
+      function createComparePane(container, modelId, modelLabel) {
+        container.innerHTML = `
+          <div class="cmp-pane-header">
+            <span class="cmp-model-name">${escapeHtml(modelLabel)}</span>
+            <span class="cmp-status-dot"></span>
+            <span class="cmp-status-text">Waiting…</span>
+          </div>
+          <div class="cmp-body">
+            <div class="cmp-thoughts"></div>
+            <div class="cmp-cards"></div>
+            <div class="cmp-conclusion" style="display:none"></div>
+            <div class="cmp-post-actions" style="display:none"></div>
+          </div>`;
+
+        const statusText = container.querySelector(".cmp-status-text");
+        const thoughtsDiv = container.querySelector(".cmp-thoughts");
+        const cardsDiv = container.querySelector(".cmp-cards");
+        const conclusionDiv = container.querySelector(".cmp-conclusion");
+        const postActionsDiv = container.querySelector(".cmp-post-actions");
+        const paneState = { hyps: new Map(), conclusion: "", thoughtsLog: [] };
+
+        function renderPaneCards() {
+          const sorted = [...paneState.hyps.entries()].sort((a, b) => b[1].probability - a[1].probability);
+          const leadingId = sorted[0]?.[0];
+          cardsDiv.innerHTML = "";
+          sorted.forEach(([id, h]) => {
+            const pct = Math.round(h.probability * 100);
+            const div = document.createElement("div");
+            div.className = "cmp-card" + (id === leadingId ? " leading" : "");
+            div.innerHTML = `
+              <div class="cmp-card-header">
+                <span class="cmp-card-name">${escapeHtml(h.label)}</span>
+                <span class="cmp-card-prob">${pct}%</span>
+              </div>
+              <div class="cmp-card-bar"><div class="cmp-card-bar-fill" style="width:${pct}%"></div></div>
+              ${h.reasoning ? `<div class="cmp-card-reasoning">${escapeHtml(h.reasoning)}</div>` : ""}`;
+            cardsDiv.appendChild(div);
+          });
+        }
+
+        function handlePaneEvent(evt) {
+          switch (evt.type) {
+            case "thought":
+              paneState.thoughtsLog.push(evt.text);
+              const tDiv = document.createElement("div");
+              tDiv.className = "cmp-thought";
+              tDiv.textContent = evt.text;
+              thoughtsDiv.appendChild(tDiv);
+              thoughtsDiv.querySelectorAll(".cmp-thought").forEach((el, i, arr) => {
+                el.style.opacity = i < arr.length - 3 ? "0.3" : "1";
+              });
+              break;
+            case "hypothesis":
+              paneState.hyps.set(evt.id, {
+                label: evt.label, probability: evt.probability,
+                confidence: evt.confidence || "medium", reasoning: evt.reasoning || "",
+              });
+              renderPaneCards();
+              break;
+            case "update":
+              if (paneState.hyps.has(evt.id)) {
+                paneState.hyps.get(evt.id).probability = evt.probability;
+                if (evt.confidence) paneState.hyps.get(evt.id).confidence = evt.confidence;
+                renderPaneCards();
+              }
+              break;
+            case "conclusion":
+              paneState.conclusion = evt.text;
+              const sorted = [...paneState.hyps.entries()].sort((a, b) => b[1].probability - a[1].probability);
+              const leading = sorted[0]?.[1];
+              conclusionDiv.style.display = "";
+              conclusionDiv.innerHTML = `
+                <div class="cmp-conclusion-label">Leading Diagnosis</div>
+                ${leading ? `<div class="cmp-conclusion-leading">${escapeHtml(leading.label)} — ${Math.round(leading.probability * 100)}%</div>` : ""}
+                <div class="cmp-conclusion-text">${escapeHtml(evt.text)}</div>`;
+              postActionsDiv.style.display = "flex";
+              const paneBtn = document.createElement("button");
+              paneBtn.className = "pdf-action-btn";
+              paneBtn.textContent = t("savePDF");
+              paneBtn.addEventListener("click", () => exportToPDF({
+                btn: paneBtn,
+                hyps: paneState.hyps,
+                conclusion: paneState.conclusion,
+                tLog: paneState.thoughtsLog,
+                modelLbl: modelLabel,
+              }));
+              postActionsDiv.appendChild(paneBtn);
+              container.classList.add("done");
+              statusText.textContent = "Complete";
+              break;
+            case "error":
+              container.classList.add("error");
+              statusText.textContent = "Error";
+              break;
+          }
+        }
+
+        async function run(presentation) {
+          container.classList.remove("done", "error");
+          statusText.textContent = "Reasoning…";
+          paneState.hyps.clear(); paneState.conclusion = ""; paneState.thoughtsLog = [];
+          thoughtsDiv.innerHTML = ""; cardsDiv.innerHTML = "";
+          conclusionDiv.style.display = "none"; conclusionDiv.innerHTML = "";
+          postActionsDiv.style.display = "none"; postActionsDiv.innerHTML = "";
+          try {
+            const resp = await fetch("/api/reason", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ customPresentation: presentation, model: modelId, language: currentLang }),
+            });
+            if (!resp.ok || !resp.body) throw new Error(`HTTP ${resp.status}`);
+            const reader = resp.body.getReader();
+            const decoder = new TextDecoder();
+            let buf = "";
+            while (true) {
+              const { done, value } = await reader.read();
+              if (done) break;
+              buf += decoder.decode(value, { stream: true });
+              let idx;
+              while ((idx = buf.indexOf("\n\n")) !== -1) {
+                const block = buf.slice(0, idx).trim();
+                buf = buf.slice(idx + 2);
+                if (!block.startsWith("data:")) continue;
+                const payload = block.slice(5).trim();
+                if (payload === "[DONE]") return;
+                try { handlePaneEvent(JSON.parse(payload)); } catch(e) {}
+              }
+            }
+          } catch (err) {
+            container.classList.add("error");
+            statusText.textContent = "Error: " + err.message;
+          }
+        }
+
+        return { run };
+      }
+
+      async function runComparison(presentation) {
+        const layout = document.getElementById("cmp-layout");
+        const paneA = document.getElementById("cmp-pane-a");
+        const paneB = document.getElementById("cmp-pane-b");
+        thoughtStream.classList.add("hidden");
+        cardsSection.style.display = "none";
+        logSection.classList.add("hidden");
+        postConclusionActions.style.display = "none";
+        document.body.classList.add("compare-active");
+        layout.classList.add("visible");
+        const modelAId = selectedModel;
+        const modelALabel = modelSelect.options[modelSelect.selectedIndex]?.text || modelAId;
+        const modelBId = modelSelectB.value;
+        const modelBLabel = modelSelectB.options[modelSelectB.selectedIndex]?.text || modelBId;
+        const instA = createComparePane(paneA, modelAId, modelALabel);
+        const instB = createComparePane(paneB, modelBId, modelBLabel);
+        submitBtn.disabled = true;
+        submitBtn.querySelector("span").textContent = t("reasoningEllipsis");
+        inputCard.classList.add("dimmed");
+        await Promise.all([instA.run(presentation), instB.run(presentation)]);
+        submitBtn.disabled = false;
+        submitBtn.querySelector("span").textContent = t("runAgain");
+        inputCard.classList.remove("dimmed");
+      }
+
+      // ============ HISTORY ============
+      const HISTORY_KEY = "so_history";
+      const HISTORY_MAX = 10;
+
+      function saveToHistory() {
+        if (!lastConclusion || hypotheses.size === 0) return;
+        const sorted = [...hypotheses.entries()].sort((a, b) => b[1].probability - a[1].probability);
+        const leading = sorted[0]?.[1];
+        const record = {
+          id: Date.now(), timestamp: Date.now(),
+          presentation: lastPresentation,
+          modelId: selectedModel,
+          modelLabel: modelSelect.options[modelSelect.selectedIndex]?.text || selectedModel,
+          conclusion: lastConclusion,
+          leadingLabel: leading?.label || "",
+          leadingProbability: leading?.probability || 0,
+          hypotheses: sorted.map(([id, h]) => ({ id, ...h })),
+          thoughtsLog: [...thoughtsLog],
+        };
+        const history = getHistory();
+        history.unshift(record);
+        if (history.length > HISTORY_MAX) history.length = HISTORY_MAX;
+        try { localStorage.setItem(HISTORY_KEY, JSON.stringify(history)); } catch(e) {}
+      }
+
+      function getHistory() {
+        try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); } catch { return []; }
+      }
+
+      function renderHistoryPanel() {
+        const list = document.getElementById("history-list");
+        const history = getHistory();
+        if (history.length === 0) {
+          list.innerHTML = `<div class="history-empty">No sessions yet.<br>Complete a reasoning run to save it here.</div>`;
+          return;
+        }
+        const locale = currentLang === "zh" ? "zh-CN" : "en-GB";
+        list.innerHTML = history.map(r => {
+          const d = new Date(r.timestamp);
+          const dateStr = d.toLocaleDateString(locale, { day: "numeric", month: "short" }) + " · " +
+                          d.toLocaleTimeString(locale, { hour: "2-digit", minute: "2-digit" });
+          const pct = Math.round(r.leadingProbability * 100);
+          const snippet = r.presentation.length > 110 ? r.presentation.slice(0, 110) + "…" : r.presentation;
+          return `<div class="history-item" data-id="${r.id}">
+            <div class="history-item-top">
+              <span class="history-item-leading">${escapeHtml(r.leadingLabel)}</span>
+              <span class="history-item-prob">${pct}%</span>
+            </div>
+            <div class="history-item-meta">${escapeHtml(dateStr)} · ${escapeHtml(r.modelLabel)}</div>
+            <div class="history-item-snippet">${escapeHtml(snippet)}</div>
+          </div>`;
+        }).join("");
+        list.querySelectorAll(".history-item").forEach(item => {
+          item.addEventListener("click", () => {
+            const id = Number(item.dataset.id);
+            const record = getHistory().find(r => r.id === id);
+            if (record) restoreFromHistory(record);
+            document.getElementById("history-panel").classList.add("hidden");
+          });
+        });
+      }
+
+      function restoreFromHistory(record) {
+        if (compareMode) toggleCompare();
+        inputEl.value = record.presentation;
+        autoresizeTextarea();
+        updateCharCount();
+        const opt = Array.from(modelSelect.options).find(o => o.value === record.modelId);
+        if (opt) { modelSelect.value = record.modelId; selectedModel = record.modelId; }
+        resetRunState();
+        lastPresentation = record.presentation;
+        lastConclusion = record.conclusion;
+        thoughtsLog = [...record.thoughtsLog];
+        record.hypotheses.forEach(h => {
+          hypotheses.set(h.id, {
+            label: h.label, probability: h.probability,
+            confidence: h.confidence || "medium", reasoning: h.reasoning,
+            prior_basis: h.prior_basis, key_finding: h.key_finding,
+            evidence: h.evidence || [], tests: h.tests || [],
+          });
+        });
+        cardsSection.style.display = "flex";
+        renderCards();
+        addConclusion(record.conclusion);
+        showThoughtStream();
+        markThoughtStreamDone();
+        renderRefinePanel([]);
+        logSection.classList.remove("hidden");
+        postConclusionActions.innerHTML = "";
+        pdfBtn = document.createElement("button");
+        pdfBtn.className = "pdf-action-btn";
+        pdfBtn.textContent = t("savePDF");
+        pdfBtn.addEventListener("click", exportToPDF);
+        postConclusionActions.appendChild(pdfBtn);
+        postConclusionActions.style.display = "block";
       }
 
       // ============ MODELS ============
@@ -1732,13 +2153,16 @@ ${headStyles}
           const res = await fetch("/api/models");
           const list = await res.json();
           modelSelect.innerHTML = "";
+          modelSelectB.innerHTML = "";
           list.forEach((m) => {
             const opt = document.createElement("option");
             opt.value = m.id;
             opt.textContent = m.label;
             modelSelect.appendChild(opt);
+            modelSelectB.appendChild(opt.cloneNode(true));
           });
           selectedModel = list[0]?.id || "";
+          if (list.length > 1) modelSelectB.value = list[1].id;
         } catch (e) {
           console.error("Failed to load models", e);
         }
@@ -1802,6 +2226,30 @@ ${headStyles}
       modelSelect.addEventListener("change", () => { selectedModel = modelSelect.value; });
       presetsToggle.addEventListener("click", () => togglePresetsDrawer());
       logToggle.addEventListener("click", () => toggleLog());
+
+      document.getElementById("compare-toggle").addEventListener("click", toggleCompare);
+
+      document.getElementById("history-btn").addEventListener("click", (e) => {
+        e.stopPropagation();
+        const panel = document.getElementById("history-panel");
+        if (panel.classList.contains("hidden")) {
+          renderHistoryPanel();
+          panel.classList.remove("hidden");
+        } else {
+          panel.classList.add("hidden");
+        }
+      });
+      document.getElementById("history-close-btn").addEventListener("click", () => {
+        document.getElementById("history-panel").classList.add("hidden");
+      });
+      document.addEventListener("click", (e) => {
+        const panel = document.getElementById("history-panel");
+        if (!panel.classList.contains("hidden") &&
+            !panel.contains(e.target) &&
+            !document.getElementById("history-btn").contains(e.target)) {
+          panel.classList.add("hidden");
+        }
+      });
 
 
       // ============ INIT ============
