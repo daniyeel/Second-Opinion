@@ -13,10 +13,17 @@ When a seasoned clinician looks at a patient, they don't jump to a conclusion. T
 Given a patient presentation, Second Opinion streams a structured differential diagnosis in real time — not as a chat response, but as a live reasoning trace with auditable steps:
 
 - Generates 4-6 differential diagnoses with live probability estimates
-- Updates probabilities as supporting and refuting evidence is surfaced
-- Produces a conclusion with the leading diagnosis and recommended next steps
-- Asks focused clarifying questions that would most change the differential
+- Animates probability bars as hypotheses are added and revised
+- Surfaces supporting and refuting clinical evidence per hypothesis
+- Lists recommended diagnostic investigations for each candidate
+- Produces a conclusion with the leading diagnosis and next steps
+- Asks 2-3 focused clarifying questions that would most narrow the differential
+- Supports iterative refinement — answer the questions, rerun, watch the differential update
 - Exports a clinical-quality PDF report with selectable text
+- Compare two models side by side on the same case
+- Full session history — last 10 runs saved locally, restorable in one click
+- Dark and light mode with OS preference detection
+- Full Simplified Chinese interface
 
 Every step is visible as it happens. The model cannot output a bare answer — it must justify it, one structured event at a time.
 
@@ -44,21 +51,33 @@ The server streams this to the client over **Server-Sent Events**. The frontend 
 
 ### Why NDJSON over SSE
 
-SSE gives us a persistent, low-overhead unidirectional stream without WebSockets. NDJSON lets us parse each token-complete line independently as soon as the model emits it — no waiting for the full response. The combination means the UI reacts within milliseconds of each reasoning step being generated.
+SSE gives a persistent, low-overhead unidirectional stream without WebSockets. NDJSON lets each token-complete line be parsed independently the moment the model emits it — no waiting for the full response. The combination means the UI reacts within milliseconds of each reasoning step being generated.
 
 ### Prompt engineering as a schema enforcer
 
-The model is not asked to "think about" a diagnosis. It is given a strict output contract: field names, allowed types, required sequencing. The system prompt defines the schema, the allowed event order, and the exact constraints (e.g. 4-6 hypotheses, exactly 2-3 questions after the conclusion). If the model deviates, malformed lines are discarded server-side before they reach the client.
+The model is not asked to "think about" a diagnosis. It is given a strict output contract: field names, allowed types, required sequencing. The system prompt defines the schema, the allowed event order, and exact constraints (e.g. 4-6 hypotheses, exactly 2-3 questions after the conclusion). Malformed lines are discarded server-side before they reach the client.
 
 This turns an open-ended language model into something closer to a structured reasoning engine.
 
-### PDF export
+### Model comparison
 
-Clicking Save PDF sends the rendered report HTML to a `/api/pdf` endpoint. The server spins up a headless Chromium instance via **Puppeteer**, loads the HTML with all its CSS, and calls `page.pdf()`. The resulting binary is returned to the client as a blob, which is opened in a new browser tab. Text is fully selectable. Layout is identical to what you see on screen.
+Two models can be run on the same case simultaneously. Each pane streams independently, building its own differential in parallel. When both complete, the results sit side by side — same patient, same moment, different reasoning paths. Each pane has its own PDF export.
 
 ### Iterative refinement
 
 After the conclusion, a refine panel appears. The user can answer the model's clarifying questions or add any additional clinical detail. That input is appended to the original presentation and a new reasoning run begins — the differential updates with the new information. Each iteration brings the diagnosis closer.
+
+### PDF export
+
+Clicking Save PDF sends the rendered report HTML to a `/api/pdf` endpoint. The server spins up a headless Chromium instance via Puppeteer, loads the HTML with all its CSS, and calls `page.pdf()`. The result is returned as a binary blob and opened in a new browser tab. Text is fully selectable and layout is identical to what is shown on screen.
+
+### Session history
+
+Every completed run is saved to `localStorage` (capped at 10 sessions). The history panel shows each session with its timestamp, model, and leading diagnosis. Any session can be restored in one click — hypotheses, evidence, conclusion, and the full reasoning log are all rebuilt without re-running the model.
+
+### Internationalisation
+
+Full Simplified Chinese support is built in. The language instruction is injected into both the system prompt and the user message, constraining all text values in the JSON output to Chinese while keeping field names and type values in English. The UI switches language via `localStorage`. All dynamic labels — "Reasoning", "Complete", "Leading diagnosis", "Probability trend", "Compare", "History" — are translated through a centralised key-value system.
 
 ## Technical stack
 
@@ -68,24 +87,21 @@ After the conclusion, a refine panel appears. The user can answer the model's cl
 | Server | Express |
 | Streaming | Server-Sent Events (SSE) |
 | AI gateway | OpenRouter |
-| Default model | MiniMax M2 |
 | PDF rendering | Puppeteer (headless Chrome) |
 | Frontend | Vanilla JS, no framework, no build step |
 | Hosting | Railway |
 
-### Model selection
+### Models
 
 Three models are available via OpenRouter:
 
-- **MiniMax M2** (default) — strong reasoning, low latency, cost-efficient
-- **Gemini 2.0 Flash** — fast, reliable schema adherence
-- **Claude 3.5 Haiku** — precise and concise
+| Model | ID | Notes |
+|---|---|---|
+| MiniMax M2 | `minimax/minimax-m2` | Default. Strong reasoning, low latency, cost-efficient |
+| Gemini 2.0 Flash | `google/gemini-2.0-flash-001` | Fast, reliable schema adherence |
+| DeepSeek V4 Flash | `deepseek/deepseek-v4-flash:free` | Free tier, 1M context, 284B MoE |
 
-The architecture is model-agnostic. Any model accessible via OpenRouter can be swapped in with a one-line change.
-
-### Internationalisation
-
-Full Simplified Chinese support is built in. The language instruction is injected into both the system prompt and the user message, constraining all text values in the JSON output to Chinese while keeping field names and type values in English. The UI switches language via `localStorage`.
+The architecture is model-agnostic. Any model accessible via OpenRouter can be swapped in with a one-line change in `server.js`.
 
 ## Running locally
 
@@ -102,3 +118,4 @@ Open [http://localhost:3000](http://localhost:3000). Get an API key at [openrout
 ---
 
 > Educational demonstration only. Not medical advice. All scenarios are synthetic.
+# second-opinion
