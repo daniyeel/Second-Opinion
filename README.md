@@ -35,7 +35,7 @@ Every step is visible as it happens. The model cannot output a bare answer — i
 
 ### Structured output over SSE
 
-The backend sends a strict prompt instructing the model to respond exclusively in NDJSON — one typed JSON object per line, nothing else. Each line is one of seven event types:
+The backend instructs the model to respond exclusively in NDJSON — one typed JSON object per line. Each line is one of seven event types:
 
 | Type | Purpose |
 |---|---|
@@ -47,17 +47,11 @@ The backend sends a strict prompt instructing the model to respond exclusively i
 | `conclusion` | Summary of the leading diagnosis and next steps |
 | `question` | A clarifying question that would most narrow the differential |
 
-The server streams this to the client over **Server-Sent Events**. The frontend parses each line as it arrives and renders it incrementally — hypothesis cards appear, probability bars animate, evidence tags attach — all live, as the model reasons.
-
-### Why NDJSON over SSE
-
-SSE gives a persistent, low-overhead unidirectional stream without WebSockets. NDJSON lets each token-complete line be parsed independently the moment the model emits it — no waiting for the full response. The combination means the UI reacts within milliseconds of each reasoning step being generated.
+The server streams this to the client over Server-Sent Events. The frontend parses each line as it arrives and renders it incrementally — hypothesis cards appear, probability bars animate, evidence tags attach — all live, as the model reasons.
 
 ### Prompt engineering as a schema enforcer
 
-The model is not asked to "think about" a diagnosis. It is given a strict output contract: field names, allowed types, required sequencing. The system prompt defines the schema, the allowed event order, and exact constraints (e.g. 4-6 hypotheses, exactly 2-3 questions after the conclusion). Malformed lines are discarded server-side before they reach the client.
-
-This turns an open-ended language model into something closer to a structured reasoning engine.
+The model is given a strict output contract: field names, allowed types, required sequencing. The system prompt defines the schema, the allowed event order, and exact constraints (e.g. 4-6 hypotheses, exactly 2-3 questions after the conclusion). Malformed lines are discarded server-side before they reach the client.
 
 ### Model comparison
 
@@ -65,11 +59,11 @@ Two models can be run on the same case simultaneously. Each pane streams indepen
 
 ### Iterative refinement
 
-After the conclusion, a refine panel appears. The user can answer the model's clarifying questions or add any additional clinical detail. That input is appended to the original presentation and a new reasoning run begins — the differential updates with the new information. Each iteration brings the diagnosis closer.
+After the conclusion, a refine panel appears. The user can answer the model's clarifying questions or add any additional clinical detail. That input is appended to the original presentation and a new reasoning run begins. Each iteration brings the diagnosis closer.
 
 ### PDF export
 
-Clicking Save PDF sends the rendered report HTML to a `/api/pdf` endpoint. The server spins up a headless Chromium instance via Puppeteer, loads the HTML with all its CSS, and calls `page.pdf()`. The result is returned as a binary blob and opened in a new browser tab. Text is fully selectable and layout is identical to what is shown on screen.
+Clicking Save PDF sends the rendered report HTML to a `/api/pdf` endpoint. The server renders it via Puppeteer and returns a binary blob, opened in a new browser tab. Text is fully selectable and layout is identical to what is shown on screen.
 
 ### Session history
 
@@ -77,7 +71,7 @@ Every completed run is saved to `localStorage` (capped at 10 sessions). The hist
 
 ### Internationalisation
 
-Full Simplified Chinese support is built in. The language instruction is injected into both the system prompt and the user message, constraining all text values in the JSON output to Chinese while keeping field names and type values in English. The UI switches language via `localStorage`. All dynamic labels — "Reasoning", "Complete", "Leading diagnosis", "Probability trend", "Compare", "History" — are translated through a centralised key-value system.
+Full Simplified Chinese support is built in. The language instruction is injected into both the system prompt and the user message, constraining all text values in the JSON output to Chinese while keeping field names and type values in English. All dynamic UI labels are translated through a centralised key-value system.
 
 ## Technical stack
 
@@ -93,15 +87,13 @@ Full Simplified Chinese support is built in. The language instruction is injecte
 
 ### Models
 
-Three models are available via OpenRouter:
+| Model | ID |
+|---|---|
+| MiniMax M2 (default) | `minimax/minimax-m2` |
+| Gemini 2.0 Flash | `google/gemini-2.0-flash-001` |
+| DeepSeek V4 Flash | `deepseek/deepseek-v4-flash:free` |
 
-| Model | ID | Notes |
-|---|---|---|
-| MiniMax M2 | `minimax/minimax-m2` | Default. Strong reasoning, low latency, cost-efficient |
-| Gemini 2.0 Flash | `google/gemini-2.0-flash-001` | Fast, reliable schema adherence |
-| DeepSeek V4 Flash | `deepseek/deepseek-v4-flash:free` | Free tier, 1M context, 284B MoE |
-
-The architecture is model-agnostic. Any model accessible via OpenRouter can be swapped in with a one-line change in `server.js`.
+Any model accessible via OpenRouter can be swapped in with a one-line change in `server.js`.
 
 ## Running locally
 
@@ -118,4 +110,3 @@ Open [http://localhost:3000](http://localhost:3000). Get an API key at [openrout
 ---
 
 > Educational demonstration only. Not medical advice. All scenarios are synthetic.
-# second-opinion

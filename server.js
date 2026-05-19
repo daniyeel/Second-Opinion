@@ -28,9 +28,9 @@ const openai = new OpenAI({
 const DEFAULT_MODEL = "minimax/minimax-m2";
 
 const ALLOWED_MODELS = new Map([
-  ["minimax/minimax-m2",          "MiniMax M2 (default)"],
-  ["google/gemini-2.0-flash-001", "Gemini 2.0 Flash"],
-  ["anthropic/claude-3.5-haiku",  "Claude 3.5 Haiku"],
+  ["minimax/minimax-m2",             "MiniMax M2"],
+  ["google/gemini-2.0-flash-001",    "Gemini 2.0 Flash"],
+  ["deepseek/deepseek-v4-flash:free","DeepSeek V4 Flash"],
 ]);
 
 const SCENARIOS = {
@@ -141,7 +141,7 @@ Strict output rules:
       ],
       stream: true,
       temperature: 0.3,
-      max_tokens: 3000,
+      max_tokens: 2000,
     });
 
     let buffer = "";
