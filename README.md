@@ -31,15 +31,14 @@ Second Opinion takes a free-text patient presentation and streams a live, struct
 
 | | |
 |---|---|
-| **Differential** | 4–6 hypotheses with live probability estimates, updated as evidence arrives |
+| **Live differential** | Top-3 hypotheses with animated probability bars, updated in real time as the model reasons |
 | **Evidence** | Supporting and refuting clinical findings surfaced per hypothesis |
-| **Investigations** | Recommended diagnostic workup listed for each candidate |
-| **Conclusion** | Leading diagnosis with next steps for further workup |
-| **Clarifying questions** | 4–5 targeted questions that would most narrow the differential |
-| **Refinement** | Answer the questions and rerun. Watch the differential update. |
-| **Comparison** | Run two models on the same case simultaneously, side by side |
-| **PDF export** | Clinical-quality report with selectable text, identical to the on-screen view |
-| **Session history** | Last 10 runs saved locally, restorable in one click, deletable per entry |
+| **Clinical summary** | 2-3 sentence conclusion: leading diagnosis justified by specific clinical findings, then next steps and urgency |
+| **Clarifying questions** | 2-3 targeted questions that would most narrow the differential |
+| **Refinement** | Answer the questions or add new findings — each pass shown as a labeled block in the input card, differential reruns with updated context |
+| **Comparison** | Run two models on the same case simultaneously, side by side; each pane saves to history independently |
+| **PDF export** | Clinical-quality report: leading diagnosis with probability, differential with evidence, refinement passes, full reasoning log, disclaimer footer on every page |
+| **Session history** | Last 10 runs saved locally — including compare runs — restorable in one click, deletable per entry |
 | **Dark mode** | Full dark/light theme with OS preference detection |
 | **Multilingual** | Complete Simplified Chinese interface, including all model output |
 
@@ -51,23 +50,23 @@ Every step is visible as it happens. The model cannot output a bare answer; it m
 
 ### Structured output over SSE
 
-The system prompt instructs the model to respond exclusively in **NDJSON**: one typed JSON object per line, nothing else. Seven event types are defined: `thought`, `hypothesis`, `update`, `evidence`, `tests`, `conclusion`, and `question`. The server streams these to the client over **Server-Sent Events**. The frontend parses each line the moment it arrives; hypothesis cards appear, probability bars animate, evidence tags attach, all in real time.
+The system prompt instructs the model to respond exclusively in **NDJSON**: one typed JSON object per line, nothing else. Seven event types are defined: `thought`, `hypothesis`, `update`, `evidence`, `tests`, `conclusion`, and `question`. The server streams these to the client over **Server-Sent Events**. The frontend parses each line the moment it arrives; the live differential updates, probability bars animate, and evidence tags attach — all in real time.
 
 ### Prompt engineering as a schema enforcer
 
-The model is not asked to "think about" a diagnosis. It is given a strict output contract with required field names, sequencing rules, and cardinality constraints (e.g. 4–6 hypotheses, exactly 4–5 questions after the conclusion). Malformed lines are silently discarded server-side before reaching the client. This turns an open-ended language model into a structured reasoning engine.
+The model is not asked to "think about" a diagnosis. It is given a strict output contract with required field names, sequencing rules, and cardinality constraints. Malformed lines are silently discarded server-side before reaching the client. This turns an open-ended language model into a structured reasoning engine.
 
 ### Model comparison
 
-Two models stream in parallel via `Promise.all`, each building its own differential independently. When both complete, results sit side by side: same patient, same moment, different reasoning paths. Each pane has its own PDF export.
+Two models stream in parallel via `Promise.all`, each building its own differential independently. When both complete, results sit side by side: same patient, same moment, different reasoning paths. Each pane has its own PDF export and saves to session history.
 
 ### Iterative refinement
 
-After the conclusion, the user can answer the model's clarifying questions or add new clinical detail. The input is appended to the original presentation and a new reasoning run begins. The differential updates with the new information.
+After the conclusion, the user can answer the model's clarifying questions or add new clinical detail. The original presentation stays unchanged in the textarea; each refinement pass appears below it as a labeled block with an accent border. The full context (original + all passes) is sent to the model for a new reasoning run.
 
 ### PDF export
 
-`/api/pdf` receives the rendered report HTML, spins up a headless Chromium instance via Puppeteer, and calls `page.pdf()`. The result is returned as a binary blob and opened in a new browser tab. Text is fully selectable; layout is pixel-identical to the on-screen view.
+`/api/pdf` receives the rendered report HTML, spins up a headless Chromium instance via Puppeteer, and calls `page.pdf()`. The report includes the leading diagnosis with probability and confidence, the top-3 differential with evidence, any refinement passes, and the full reasoning log. A disclaimer footer is pinned to the bottom of every page. Text is fully selectable.
 
 ---
 
@@ -116,16 +115,15 @@ Open [http://localhost:3000](http://localhost:3000).
 
 ## Models
 
-| Model | ID | Notes |
-|---|---|---|
-| MiniMax M2 | `minimax/minimax-m2` | Default. Strong reasoning, low latency |
-| Gemini 2.0 Flash | `google/gemini-2.0-flash-001` | Fast, reliable schema adherence |
-| DeepSeek V4 Flash | `deepseek/deepseek-v4-flash:free` | Free tier. 284B MoE, 1M context |
-| DeepSeek R1 | `deepseek/deepseek-r1-0528:free` | Free tier. Reasoning model, 671B, explicit chain-of-thought |
-| Qwen3 235B | `qwen/qwen3-235b-a22b:free` | Free tier. Alibaba 235B MoE, 131K context |
-| GPT-4o | `openai/gpt-4o` | OpenAI flagship, 128K context |
+| Model | ID |
+|---|---|
+| MiniMax M2 | `minimax/minimax-m2` |
+| Gemini 2.0 Flash | `google/gemini-2.0-flash-001` |
+| GPT-4o Mini | `openai/gpt-4o-mini` |
+| GPT-4o | `openai/gpt-4o` |
+| Claude Sonnet 4.6 | `anthropic/claude-sonnet-4-6` |
 
-Any model on OpenRouter can be swapped in with a one-line change in `server.js`.
+All models are routed through OpenRouter. MiniMax M2 is the default. Any model on OpenRouter can be swapped in with a one-line change in `server.js`.
 
 ---
 
@@ -154,4 +152,3 @@ MIT
 <div align="center">
   <sub>Educational use only. Not for clinical or diagnostic purposes.</sub>
 </div>
-# second-opinion
