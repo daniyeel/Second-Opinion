@@ -28,9 +28,11 @@ const openai = new OpenAI({
 const DEFAULT_MODEL = "minimax/minimax-m2";
 
 const ALLOWED_MODELS = new Map([
-  ["minimax/minimax-m2",             "MiniMax M2"],
-  ["google/gemini-2.0-flash-001",    "Gemini 2.0 Flash"],
-  ["deepseek/deepseek-v4-flash:free","DeepSeek V4 Flash"],
+  ["minimax/minimax-m2",              "MiniMax M2"],
+  ["google/gemini-2.0-flash-001",     "Gemini 2.0 Flash"],
+  ["openai/gpt-4o-mini",             "GPT-4o Mini"],
+  ["openai/gpt-4o",                   "GPT-4o"],
+  ["anthropic/claude-sonnet-4-6",    "Claude Sonnet 4.6"],
 ]);
 
 const SCENARIOS = {
@@ -113,7 +115,7 @@ You MUST respond as a sequence of JSON objects, one per line (NDJSON). Each obje
 3. {"type":"update","id":"existing_id","probability":0.0-1.0,"reasoning":"why the probability changed"}
 4. {"type":"evidence","id":"hypothesis_id","finding":"clinical feature","direction":"supports"|"refutes"}
 5. {"type":"tests","id":"hypothesis_id","tests":["TestName1","TestName2","TestName3"]}
-6. {"type":"conclusion","text":"summary of leading diagnoses and next steps for further workup"}
+6. {"type":"conclusion","text":"1-2 sentences only: the single most important next diagnostic step and urgency level. Do not restate diagnoses already listed in the differential above."}
 7. {"type":"question","text":"a single clarifying question that would most change the differential"}
 
 Strict output rules:
@@ -141,7 +143,7 @@ Strict output rules:
       ],
       stream: true,
       temperature: 0.3,
-      max_tokens: 2000,
+      max_tokens: 1500,
     });
 
     let buffer = "";

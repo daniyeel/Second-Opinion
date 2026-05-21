@@ -1,0 +1,138 @@
+\documentclass[11pt, a4paper]{article}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[margin=2.8cm, top=2.4cm, bottom=2.8cm]{geometry}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage{parskip}
+\usepackage{mdframed}
+\usepackage{hyperref}
+\usepackage{microtype}
+\usepackage{enumitem}
+\usepackage{fontawesome5}
+
+% Colors
+\definecolor{accent}{RGB}{8, 145, 178}
+\definecolor{textmuted}{RGB}{107, 114, 128}
+\definecolor{borderlight}{RGB}{226, 232, 240}
+\definecolor{bglight}{RGB}{248, 250, 252}
+
+% Hyperref setup
+\hypersetup{
+  colorlinks=true,
+  urlcolor=accent,
+  linkcolor=accent,
+}
+
+% Section formatting
+\titleformat{\section}
+  {\normalfont\small\bfseries\color{textmuted}\uppercase\ls{0.12em}}
+  {}{0em}{}
+\titlespacing{\section}{0pt}{22pt}{6pt}
+
+% Framed box for demo case
+\mdfdefinestyle{demobox}{
+  linecolor=borderlight,
+  linewidth=1pt,
+  backgroundcolor=bglight,
+  innerleftmargin=16pt,
+  innerrightmargin=16pt,
+  innertopmargin=12pt,
+  innerbottommargin=12pt,
+  roundcorner=6pt,
+  skipabove=8pt,
+  skipbelow=8pt,
+}
+
+% No paragraph indent
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{7pt}
+
+\begin{document}
+
+\pagestyle{empty}
+
+% ── Header ──────────────────────────────────────────────────────────────────
+\begin{minipage}[c]{0.12\textwidth}
+  \includegraphics[width=\linewidth]{public/logo.png}
+\end{minipage}
+\hspace{12pt}
+\begin{minipage}[c]{0.82\textwidth}
+  {\fontsize{22}{26}\selectfont\bfseries Second Opinion}\\[3pt]
+  {\color{textmuted}\small Clinical AI reasoning}
+\end{minipage}
+
+\vspace{4pt}
+{\color{borderlight}\rule{\linewidth}{0.8pt}}
+\vspace{8pt}
+
+% ── Personal note ────────────────────────────────────────────────────────────
+{\color{textmuted}\itshape
+Built Second Opinion to get hands-on experience with LLM APIs and real-time streaming — using a domain I know well as the testing ground. The result turned out more useful than expected. The architecture here — structured model output, typed event streaming, live UI rendering — is a natural foundation for what comes next: advanced image analysis for CT and MRI, integrating visual reasoning with the differential diagnosis pipeline already in place.
+}
+
+\vspace{4pt}
+{\color{borderlight}\rule{\linewidth}{0.5pt}}
+
+% ── What it is ───────────────────────────────────────────────────────────────
+\vspace{6pt}
+{\large\bfseries Second Opinion} streams a live differential diagnosis — not as a chat response, but as a structured reasoning trace you can watch unfold in real time.
+
+% ── The problem ──────────────────────────────────────────────────────────────
+\section{The Problem}
+
+Most AI tools in medicine return a diagnosis. A diagnosis without explanation is useless to a student and indefensible to a clinician. When an experienced physician evaluates a patient, they don't jump to a conclusion — they build a list of possibilities, weigh the evidence, revise their thinking in real time, and ask the right questions. That process has never been made visible. Until now.
+
+% ── What it does ─────────────────────────────────────────────────────────────
+\section{What It Does}
+
+Describe a patient presentation in free text. The model streams a live differential — 4--6 hypotheses with probability estimates that update as evidence arrives, supporting and refuting findings surfaced per hypothesis, recommended investigations, a conclusion, and clarifying questions that would most narrow the differential. Answer the questions, rerun — watch the differential update.
+
+Every step is visible as it happens. The model cannot output a bare answer — it must justify each decision, one structured event at a time.
+
+% ── How it works ─────────────────────────────────────────────────────────────
+\section{How It Works Technically}
+
+The system prompt instructs the model to respond exclusively in NDJSON — one typed JSON object per line, nothing else. Seven event types are defined: \texttt{thought}, \texttt{hypothesis}, \texttt{update}, \texttt{evidence}, \texttt{tests}, \texttt{conclusion}, and \texttt{question}. The server streams these to the client over Server-Sent Events. The frontend parses each line the moment it arrives — hypothesis cards appear, probability bars animate, evidence tags attach — all in real time.
+
+The prompt acts as a schema enforcer. The model is not asked to ``think about'' a diagnosis — it is given a strict output contract with required field names, sequencing rules, and cardinality constraints. Malformed lines are silently discarded server-side. A language model becomes a structured reasoning engine.
+
+% ── Model comparison ─────────────────────────────────────────────────────────
+\section{Model Comparison}
+
+Two models stream in parallel, each building its own differential independently. When both complete, results sit side by side — same patient, same moment, different reasoning paths. Currently supporting MiniMax M2, Gemini 2.0 Flash, DeepSeek R1, Qwen3 235B, and GPT-4o.
+
+% ── Tech stack ───────────────────────────────────────────────────────────────
+\section{Tech Stack}
+
+Node.js \textperiodcentered\ Express \textperiodcentered\ Server-Sent Events \textperiodcentered\ OpenRouter \textperiodcentered\ Puppeteer \textperiodcentered\ Vanilla JS — no framework, no build step.
+
+% ── Try it ───────────────────────────────────────────────────────────────────
+\section{Try It}
+
+\href{https://second-opinion-production.up.railway.app}{\texttt{second-opinion-production.up.railway.app}}
+
+Paste this case and run it:
+
+\begin{mdframed}[style=demobox]
+\small\itshape
+62-year-old male with sudden-onset tearing chest pain radiating to the back. BP 185/105 in the right arm, 150/88 in the left. HR 98, diaphoretic. History of poorly controlled hypertension. ECG shows no ST changes. Troponin pending.
+\end{mdframed}
+
+Then switch to compare mode and run DeepSeek R1 vs GPT-4o on the same case.
+
+% ── What's next ──────────────────────────────────────────────────────────────
+\section{What's Next}
+
+EHR integration, multi-turn reasoning chains for bedside use, and advanced image analysis for CT and MRI — integrating visual reasoning with the differential diagnosis pipeline already in place.
+
+% ── Footer ───────────────────────────────────────────────────────────────────
+\vspace{16pt}
+{\color{borderlight}\rule{\linewidth}{0.5pt}}
+\vspace{4pt}
+{\small\color{textmuted} Educational use only. Not for clinical or diagnostic purposes.}
+
+\end{document}
