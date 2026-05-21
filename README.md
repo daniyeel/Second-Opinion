@@ -11,7 +11,7 @@
   </p>
 
   <p>
-    <a href="https://second-opinion-production.up.railway.app">View Demo</a> ·
+    <a href="https://second-opinion.up.railway.app">View Demo</a> ·
     <a href="#getting-started">Get Started</a> ·
     <a href="#architecture">How It Works</a>
   </p>
@@ -152,5 +152,9 @@ MIT
 <div align="center">
   <sub>Educational use only. Not for clinical or diagnostic purposes.</sub>
 </div>
+<<<<<<< HEAD
 # second-opinion-ai
+# second-opinion-ai
+=======
+>>>>>>> 03b411eec5cb21ba9f2d53d8b9f6fc4951ab3e96
 # second-opinion-ai
