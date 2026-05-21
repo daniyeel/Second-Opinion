@@ -739,11 +739,11 @@
         page-break-inside: avoid; break-inside: avoid;
       }
       .pv-section-title + .pv-hyp { border-top: none; padding-top: 0; page-break-before: avoid; break-before: avoid; }
-      .pv-hyp-header { display: flex; align-items: baseline; gap: 8pt; margin-bottom: 2pt; }
+      .pv-hyp-header { display: flex; align-items: baseline; gap: 12px; margin-bottom: 2pt; }
       .pv-rank { font-size: 8pt; font-family: "JetBrains Mono", monospace; color: #9CA3AF; flex-shrink: 0; }
       .pv-hyp-name { font-size: 12pt; font-weight: 600; color: #1F2937; letter-spacing: -0.01em; }
       .pv-reasoning { font-size: 10pt; line-height: 1.5; color: #374151; margin: 1pt 0 0; }
-      .pv-hyp-meta { margin-left: auto; flex-shrink: 0; font-size: 8.5pt; color: #9CA3AF; font-family: "JetBrains Mono", monospace; }
+      .pv-hyp-meta { flex-shrink: 0; font-size: 8.5pt; color: #9CA3AF; font-family: "JetBrains Mono", monospace; }
       .pv-evidence { margin: 4pt 0 2pt 14pt; display: flex; flex-direction: column; gap: 2pt; }
       .pv-evidence-item { font-size: 9.5pt; line-height: 1.4; }
       .pv-supports { color: #15803D; }
