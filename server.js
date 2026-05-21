@@ -115,7 +115,7 @@ You MUST respond as a sequence of JSON objects, one per line (NDJSON). Each obje
 3. {"type":"update","id":"existing_id","probability":0.0-1.0,"reasoning":"why the probability changed"}
 4. {"type":"evidence","id":"hypothesis_id","finding":"clinical feature","direction":"supports"|"refutes"}
 5. {"type":"tests","id":"hypothesis_id","tests":["TestName1","TestName2","TestName3"]}
-6. {"type":"conclusion","text":"1-2 sentences only: the single most important next diagnostic step and urgency level. Do not restate diagnoses already listed in the differential above."}
+6. {"type":"conclusion","text":"3-4 sentences structured as follows: Sentence 1 states the leading diagnosis and the 1-2 specific clinical findings that make it most likely (e.g. 'Aortic dissection is the leading diagnosis given the tearing pain radiating to the back and the 35mmHg BP differential between arms.'). Sentence 2 briefly notes what makes the next most likely diagnosis less probable (e.g. 'STEMI is less likely given the absence of ST changes on ECG.'). Sentences 3-4 state the immediate next steps and urgency classification. Always lead with the clinical justification for the leading diagnosis — do not start with next steps."}
 7. {"type":"question","text":"a single clarifying question that would most change the differential"}
 
 Strict output rules:

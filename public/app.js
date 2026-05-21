@@ -220,7 +220,7 @@
           if (word.length > 1 && word === word.toUpperCase()) return word; // preserve abbreviations
           if (offset > 0 && TITLE_LOWER.has(word.toLowerCase())) return word.toLowerCase();
           return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
-        });
+        }).replace(/\bType a\b/g, "Type A");
       }
 
 
@@ -646,7 +646,7 @@
           const evidenceHtml = (h.evidence || []).length > 0
             ? `<div class="pv-evidence">${(h.evidence || []).map(ev =>
                 `<div class="pv-evidence-item ${ev.direction === "supports" ? "pv-supports" : "pv-refutes"}">${
-                  ev.direction === "supports" ? "&#10003;" : "&#10007;"
+                  ev.direction === "supports" ? "+" : "&minus;"
                 }&nbsp;${escapeHtml(ev.finding)}</div>`
               ).join("")}</div>`
             : "";
