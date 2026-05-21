@@ -737,7 +737,6 @@
               ${filteredTLog.map(tt => `<div class="pv-thought-item">${escapeHtml(tt)}</div>`).join("")}
             </section>` : ""}
 
-            <footer class="pv-footer">${t("pdfDisclaimer")}</footer>
           </div>`;
 
         const prevText = activeBtn.textContent;

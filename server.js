@@ -203,7 +203,10 @@ app.post("/api/pdf", async (req, res) => {
     const pdf = await page.pdf({
       format: "A4",
       printBackground: true,
-      margin: { top: "0", right: "0", bottom: "0", left: "0" },
+      margin: { top: "0", right: "0", bottom: "1.5cm", left: "0" },
+      displayHeaderFooter: true,
+      headerTemplate: "<span></span>",
+      footerTemplate: `<div style="width:100%;font-size:10px;color:#9ca3af;text-align:center;padding:0 2.2cm;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">Educational use only. Not for clinical or diagnostic purposes.</div>`,
     });
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader("Content-Disposition", 'inline; filename="second-opinion.pdf"');
