@@ -642,7 +642,6 @@
 
         const hypsHtml = sorted.map(([id, h], i) => {
           const pct = Math.round(h.probability * 100);
-          const conf = h.confidence || "medium";
           const evidenceHtml = (h.evidence || []).length > 0
             ? `<div class="pv-evidence">${(h.evidence || []).map(ev =>
                 `<div class="pv-evidence-item ${ev.direction === "supports" ? "pv-supports" : "pv-refutes"}">${
@@ -655,7 +654,7 @@
               <div class="pv-hyp-header">
                 <span class="pv-rank">${i + 1}.</span>
                 <span class="pv-hyp-name">${escapeHtml(toTitleCase(h.label))}</span>
-                <span class="pv-hyp-meta">${pct}%&nbsp;&middot;&nbsp;${escapeHtml(conf)} conf.</span>
+                <span class="pv-hyp-meta">${pct}%</span>
               </div>
               ${h.reasoning ? `<div class="pv-reasoning">${escapeHtml(h.reasoning)}</div>` : ""}
               ${evidenceHtml}
@@ -682,13 +681,12 @@
 
         const leading = sorted.length > 0 ? sorted[0][1] : null;
         const leadingPct = leading ? Math.round(leading.probability * 100) : 0;
-        const leadingConf = leading?.confidence || "medium";
         const conclusionHtml = activeConclusion ? `
           <section class="pv-section pv-conclusion-section">
             <div class="pv-conclusion-box">
               <div class="pv-conclusion-label">Leading Diagnosis</div>
               ${leading ? `<div class="pv-conclusion-name">${escapeHtml(toTitleCase(leading.label))}</div>
-              <div class="pv-conclusion-meta">${leadingPct}% &middot; ${escapeHtml(leadingConf)} conf.</div>` : ""}
+              <div class="pv-conclusion-meta">${leadingPct}%</div>` : ""}
               <div class="pv-conclusion-text">${escapeHtml(activeConclusion)}</div>
             </div>
           </section>` : "";
