@@ -674,12 +674,12 @@
         .input-card { padding: 14px; }
         textarea#input { font-size: 16px; min-height: 80px; } /* 16px prevents iOS zoom */
         .input-footer { flex-direction: column; align-items: stretch; gap: 10px; }
-        .input-meta { gap: 8px; flex-wrap: wrap; }
+        .input-meta { flex-direction: column; gap: 8px; }
         .model-selector-label { display: none; }
-        .compare-toggle { display: none; }
         .model-field-label { display: none; }
-        .model-group { border-color: transparent; border-radius: 0; }
-        .model-select { border-right: none; padding: 8px 28px 8px 0; }
+        .model-field { width: 100%; }
+        .model-group { display: flex; width: 100%; }
+        .model-select { flex: 1; min-width: 0; }
         .submit-btn { width: 100%; justify-content: center; }
 
         .thought-status { top: 52px; }
