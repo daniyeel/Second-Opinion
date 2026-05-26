@@ -499,7 +499,7 @@
       .compare-toggle {
         display: inline-flex; align-items: center; gap: 5px;
         font-size: 12px; font-weight: 500; color: #82838f;
-        background: transparent; border: none;
+        background: transparent; border: none; white-space: nowrap; flex-shrink: 0;
         border-radius: 0; padding: 8px 12px; cursor: pointer; font-family: inherit;
         transition: color 0.15s, background 0.15s;
       }
